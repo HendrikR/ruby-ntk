@@ -13,10 +13,14 @@ extern "C" VALUE Module; VALUE Module;
 DECLARE_TYPE(Widget);
 DECLARE_TYPE(Window);
 
-VALUE flWindow_initialize(VALUE self, VALUE width, VALUE height) {
+VALUE flWindow_initialize(int argc, VALUE* argv, VALUE self) {
+    VALUE width, height, title;
+    rb_scan_args(argc, argv, "21", &width, &height, &title);
+    if (NIL_P(title)) title = rb_str_new_literal("");
     Check_Type(width,  T_FIXNUM);
     Check_Type(height, T_FIXNUM);
-    Fl_Window* wnd = new Fl_Window(width, height);
+    Check_Type(title,  T_STRING);
+    Fl_Window* wnd = new Fl_Window(FIX2INT(width), FIX2INT(height), StringValuePtr(title));
     // TODO: the following might cause memory leaks.
     VALUE v_inst = Data_Wrap_Struct(clsWindow, 0, -1, wnd);
     rb_iv_set(self, "inst", v_inst);
@@ -39,7 +43,7 @@ extern "C" void Init_ntk() {
     Module = rb_define_module("Ntk");
     VALUE clsWidget = rb_define_class_under(Module, "Widget", rb_cObject);
     clsWindow = rb_define_class_under(Module, "Window", clsWidget);
-    rb_define_method(clsWindow, "initialize", RUBY_METHOD_FUNC(flWindow_initialize), 2);
+    rb_define_method(clsWindow, "initialize", RUBY_METHOD_FUNC(flWindow_initialize), -1);
     rb_define_method(clsWidget, "show", RUBY_METHOD_FUNC(flWidget_show), 0);
     rb_define_module_function(Module, "run", RUBY_METHOD_FUNC(flRun), 0);
 }
