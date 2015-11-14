@@ -1,0 +1,6 @@
+#+title Ruby-ntk
+A port of the [[http://non.tuxfamily.org/wiki/NTK][NTK]] GUI library to Ruby.
+NTK is an extension of the Fast Light Toolkit (FLTK).
+
+This is work in progress. Features might be missing, memory leaks are possible.
+
